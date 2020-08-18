@@ -1,0 +1,10 @@
+{
+  "AccessKey": "<accesskey>",
+  "SecretKey": "<secretkey>",
+  "Environment": "test",
+  "SampleDataName": "John Doe",
+  "SampleDataEmail": "john.doe@dummydomain.com",
+  "SampleDataAmount": 12,
+  "SampleDataCurrency": "INR",
+  "SampleDataContactNumber": "9831111111"
+}

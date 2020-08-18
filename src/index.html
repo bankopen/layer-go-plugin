@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head runat="server">
+    <title>Kit for Layer Payment</title>
+    <link rel="stylesheet" type="text/css" href="/assets/mainstyle.css" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <script src="https://sandbox-payments.open.money/layer"></script>
+  </head>
+  <body>
+    <div class="wrapper">      
+        <div class="divLogo">
+          <img alt="logo" src="/assets/logo.png" />
+        </div>
+        <div class="divSection">
+          <div class="divLabel">
+            <label>Full Name: {{.Name}}</label>
+          </div>
+          <div class="divLabel">
+            <label>E-mail: {{.Email}}</label>
+          </div>
+          <div class="divLabel">
+            <label>Mobile Number: {{.ContactNumber}}</label>
+          </div>
+          <div class="divLabel">
+            <label>Currency: {{.Currency}}</label>
+          </div>        
+          <div class="divLabel">
+            <label>Amount: {{.Amount}}</label>
+          </div>        
+          {{ if .ErrMessage }}
+          <div class="divError">
+            <label>Error: {{.ErrMessage}}</label>
+          </div>
+          {{ end }}
+        </div>
+        <div class="divSection">
+          <form id="layer_payment_form" action='/response' method='post' style='display: none'>
+            <input type="hidden" id="layer_pay_token_id" name="layer_pay_token_id" value="{{.PaymentTokenID}}"/>
+            <input type="hidden" id="tranid" name="tranid" value="{{.Mtx}}" />
+            <input type="hidden" id="layer_order_amount" name="layer_order_amount" value="{{.AmountFormatted}}" />
+            <input type="hidden" id="layer_payment_id" name="layer_payment_id" value="" />
+            <input type="hidden" id="fallback_url" name="fallback_url" value="" />
+            <input type="hidden" id="hash" name="hash"  value="{{.Hash}}" />
+            <input type="hidden" id="key" name="key" value="{{.AccessKey}}" />
+          </form>
+        </div>
+        <div class="divSection">
+          <input type="button" class="button" value="Pay" onclick="doPayment(); return false"/>
+        </div>      
+    </div>
+    <script>
+      function doPayment() {
+        Layer.checkout(
+          {
+            token: document.getElementById("layer_pay_token_id").value,
+            accesskey: document.getElementById("key").value,
+          },
+          function (response) {
+            console.log(response);
+            if (response !== null || response.length > 0) {
+              if (response.payment_id !== undefined) {
+                document.getElementById("layer_payment_id").value = response.payment_id;
+              }
+            }
+            document.forms.layer_payment_form.submit();
+          },
+          function (err) {
+            alert(err.message);
+          }
+        );
+      }
+    </script>
+  </body>
+</html>
